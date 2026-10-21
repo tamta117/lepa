@@ -6,9 +6,9 @@ set -e
 # set constants
 niter=500
 duration=60
-m=2
-sup=2
-f=50
+m=1
+sup=1
+f=75
 sample_code="code/sample_ch2.R"
 founder_gd="code/calc_gd_founders.R"
 slim_code="slim/code/101526_ch2"
@@ -34,8 +34,8 @@ exit
 fi
 
 # log results
-echo -e "\nLogging results..."
-Rscript ${founder_gd} ${i} ${m} ${sup}
+echo -e "\nLogging results for founders..."
+Rscript ${founder_gd} ${i} ${m} ${sup} ${f}
 
 # run slim - specify migration rate
 echo -e "\nRunning SLiM..."
@@ -93,8 +93,7 @@ fi
 
 # log results
 echo -e "\nLogging results..."
-Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration}
-
+Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f}
 # remove file
 rm "slim/output_vcf/ch2/${file}.vcf"
 done

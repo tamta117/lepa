@@ -6,6 +6,7 @@ args <- commandArgs(trailingOnly = TRUE)
 iter <- args[1]
 mig_rate <- args[2]
 sup <- args[3]
+f <- args[4]
 
 #### fam ----------------------------------------------------------------------------------------------------------------
 fam <- read.table("slim/input_vcf/ch2/founders.fam")
@@ -26,7 +27,8 @@ log <- bind_cols(pi, gd)%>%
          sup = sup,
          duration = 60,
          tick = 1,
-         n = 4)%>%
-  select(iter, m, duration, sup, tick, n, pi, ho, roh)
+         n = 4,
+         f = f)%>%
+  select(iter, f, m, duration, sup, tick, n, pi, ho, roh)
 outfile <- "slim/output/ch2/log/gd.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)
