@@ -10,7 +10,7 @@ f <- args[4]
 
 #### fam ----------------------------------------------------------------------------------------------------------------
 fam <- read.table("slim/input_vcf/ch2/founders.fam")
-gd <- read.table("slim/output/offspring/log/best_50_gd.txt", header = T)%>%
+gd <- read.table(paste0("slim/output/offspring/log/best", f, "_gd.txt"), header = T)%>%
   semi_join(fam, by = c("pair" = "V2"))%>%
   summarise(ho = mean(ho),
             roh = mean(roh))
