@@ -8,6 +8,7 @@ niter=500
 duration=60
 m=2
 sup=2
+f=50
 sample_code="code/sample_ch2.R"
 founder_gd="code/calc_gd_founders.R"
 slim_code="slim/code/101526_ch2"
@@ -24,8 +25,7 @@ echo "====================================================="
 
 # sample founders and supplements
 echo -e "\nSampling founders and supplements..."
-Rscript ${sample_code} ${m} ${sup}
-
+Rscript ${sample_code} ${m} ${sup} ${f}
 # calculate pi
 echo -e "\nCalculating pi for founders..."
 if ! vcftools --vcf "slim/input_vcf/ch2/founders.vcf" --window-pi 150000 --out "slim/output/ch2/gd/founders" 2>/dev/null; then

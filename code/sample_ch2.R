@@ -5,6 +5,7 @@ suppressPackageStartupMessages(library(tidyverse, quietly = T))
 args <- commandArgs(trailingOnly = TRUE)
 m <- as.numeric(args[1])
 sup <- as.numeric(args[2])
+f <- args[3]
 
 # sample founders
 system("plink2 --bfile slim/input_vcf/offspring/all50 --thin-indiv-count 4 --silent --export vcf-4.2 --out slim/input_vcf/ch2/founders")
