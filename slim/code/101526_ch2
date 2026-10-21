@@ -1,0 +1,129 @@
+initialize() {
+	//setSeed(1);
+	setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(nucleotideBased = T);
+	initializeSex();
+	defineConstant("K", 30);
+	defineConstant("tick", seq(1, 61, by = 10));
+	defineConstant("sup_tick", seq(1 + sup, 61, by = sup));
+	recom = 1.1e-8;
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(2.86667e-09));
+	m1.convertToSubstitution = T;
+	
+	// chromosome
+	ids = 1:17;
+	symbols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17");
+	lengths = c(241490831, 170782778, 140550405, 207231548, 154917953, 149666277, 142417080, 222385042, 159437941, 154776197, 116981451, 90819563, 96629807, 95534813, 64119235, 62492039, 44368689);
+	types = rep("A", 17);
+	fasta = 1:17;
+	
+	for (id in ids, length in lengths, type in types, symbol in symbols, fasta in fasta) {
+		initializeChromosome(id, length, type, symbol);
+		initializeAncestralNucleotides("slim/files/fasta/" + fasta + ".fasta");
+		initializeGenomicElement(g1);
+		initializeRecombinationRate(recom);
+	}
+}
+
+1 early() {
+	sim.addSubpop("p1", 4, sexRatio = 0.5);
+	p1.individuals.readIndividualsFromVCF("slim/input_vcf/ch2/founders.vcf", m1);
+	p1.individuals.age = 1;
+	
+	n_indv = mig_rate * length(sup_tick);
+	sim.addSubpop("p2", n_indv, sexRatio = 0.5);
+	p2.individuals.readIndividualsFromVCF("slim/input_vcf/ch2/sup" + n_indv + ".vcf", m1);
+	
+	defineConstant("log", community.createLogFile("slim/output/ch2/log/ch2_log.txt", append = T, sep = "\t", header = F));
+	log.addCustomColumn("m", "mig_rate;");
+	log.addCustomColumn("sup", "sup;");
+	log.addCycle();
+	log.addCustomColumn("seed", "getSeed();");
+	log.addSuppliedColumn("surt");
+	log.addSubpopulationSize(p1);
+}
+
+reproduction() {
+	// sample focal females
+	do {nb = rnorm(1, mean = 0.5, sd = 0.1);} while (nb < 0.3 | nb > 0.7);
+	females = p1.subsetIndividuals(sex = "F", minAge = 3, maxAge = 13);
+	if (females.size() == 0) { return; } // do not reproduce if no females available
+	do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
+	reproduce = p1.sampleIndividuals(breeders, sex = "F", minAge = 3, maxAge = 13);
+	
+	// reproduce
+	for (i in reproduce) {
+		male = p1.sampleIndividuals(1, sex = "M", minAge = 4, maxAge = 13);
+		// do not reproduce if no male available
+		if (male.size() == 0) { next; }
+		do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
+		while (littersize <= 0);
+		p1.addCrossed(i, male, count = littersize);
+	}
+	self.active = 0;
+}
+
+1 late() {
+	do { surt = rnorm(1, 0.615, 0.1); } while (surt <= 0.45 | surt > 0.95);
+	inds = p1.individuals;
+	death = rbinom(1, 4, 1 - surt);
+	kill = sample(inds, death);
+	sim.killIndividuals(kill);
+	log.setSuppliedValue("surt", surt);
+}
+
+sup_tick early() {
+  migrant = p2.sampleIndividuals(mig_rate);
+	p1.takeMigrants(migrant);
+	migrant.age = 1;
+}
+
+2: early() {
+	// age-structured survival
+	surf = runif(1, 0.2, 0.68);
+	do { sura = rbeta(1, alpha = 25, beta = 2); } while (sura < 0.8 | sura > 0.95);
+	do { surt = rnorm(1, 0.615, 0.1); } while (surt <= 0.45 | surt > 0.95);
+	inds = p1.individuals;
+	ages = inds.age;
+	migs = inds.migrant;
+	inds1 = inds[ages < 1];
+	inds2 = inds[ages >= 1 & ages < 16 & migs == F];
+	inds10 = inds[ages >= 16];
+	mig = inds[migs == T];
+	death1 = rbinom(1, inds1.size(), 1 - surf);
+	death2 = rbinom(1, inds2.size(), 1 - sura);
+	deathm = rbinom(1, mig.size(), 1 - surt);
+	death_first = sample(inds1, death1);
+	death_adult = sample(inds2, death2);
+	death_mig = sample(mig, deathm);
+	sim.killIndividuals(c(death_first, death_adult, inds10, death_mig));
+	
+	// density-dependence
+	p1.fitnessScaling = K / p1.individualCount;
+}
+
+// summary stats
+1: late() {
+	if (p1.individualCount == 0) {
+		log.logRow();
+		sim.simulationFinished();
+	}
+}
+
+tick late() {
+	if (p1.individualCount > 0) {
+	log.logRow();
+		outfile = "slim/output_vcf/ch2/sim" + sim.cycle + ".vcf";
+		p1.individuals.outputIndividualsToVCF(outfile, outputMultiallelics = F, simplifyNucleotides = T);
+	}
+}
+
+// output final
+61 late() {
+	if (p1.individualCount == 0) {
+		log.logRow();
+	}
+	sim.simulationFinished();
+}

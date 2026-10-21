@@ -1,0 +1,13 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+filter/
+slim/output_vcf/
+slim/input_vcf/
+slim/files/
+slim/output/ch2/gd/
+.Rproj.user
+.httr-oauth
+.quarto
