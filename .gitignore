@@ -1,13 +1,46 @@
-.Rproj.user/
+# History files
 .Rhistory
+.Rapp.history
+
+# Session data files
 .RData
+.RDataTmp
 .Ruserdata
+
+# macOS files
 .DS_Store
+
+# RStudio files
+.Rproj.user/
+.Rproj.user
+
+# R package build artifacts
+*-Ex.R
+/*.tar.gz
+/*.Rcheck/
+
+# R Markdown and Quarto
+.quarto
+*_cache/
+/cache/
+*.utf8.md
+*.knit.md
+vignettes/*.html
+vignettes/*.pdf
+
+# Environment variables and authentication
+.Renviron
+.env
+.httr-oauth
+
+# Project-specific data and output directories
 filter/
 slim/output_vcf/
 slim/input_vcf/
 slim/files/
 slim/output/ch2/gd/
-.Rproj.user
-.httr-oauth
-.quarto
+
+# Documentation and deployment
+docs/
+po/*~
+rsconnect/
