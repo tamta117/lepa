@@ -8,7 +8,7 @@ sup <- as.numeric(args[2])
 f <- args[3]
 
 # sample founders
-system(paste0("plink2 --bfile slim/input_vcf/offspring/all", f, " --thin-indiv-count 4 --silent --export vcf-4.2 --out slim/input_vcf/ch2/founders"))
+system(paste0("plink2 --bfile slim/input_vcf/offspring/all", f, " --thin-indiv-count 4 --silent --export vcf-4.2 --make-bed --out slim/input_vcf/ch2/founders"))
 
 # sample supplement
 n_sup <- length(seq(1 + sup, 61, by = sup))

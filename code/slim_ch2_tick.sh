@@ -6,7 +6,7 @@ set -e
 # set constants
 niter=500
 duration=60
-m=1
+m=2
 sup=1
 f=75
 sample_code="code/sample_ch2.R"
@@ -20,7 +20,7 @@ calcgd_code="code/calc_gd_ch2.R"
 
 for i in $(seq 1 $niter); do
 echo "====================================================="
-echo "Iteration $i for ch2 m = ${m} sup = ${sup}"
+echo "Iteration $i for ch2 m = ${m} sup = ${sup} f = ${f}"
 echo "====================================================="
 
 # sample founders and supplements
