@@ -9,6 +9,7 @@ mig_rate <- args[3]
 sup <- args[4]
 duration <- args[5]
 f <- args[6]
+mk <- args[7]
 
 # set constants
 tick <- str_extract(file, "\\d+")
@@ -47,7 +48,8 @@ log <- bind_cols(pi, het)%>%
          sup = sup,
          m = mig_rate,
          tick = tick,
-         f = f)%>%
-  select(iter, f, m, duration, sup, tick, n, pi, ho, roh)
+         f = f,
+         mk = mk)%>%
+  select(iter, f, mk, m, duration, sup, tick, n, pi, ho, roh)
 outfile <- "slim/output/ch2/log/gd.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)

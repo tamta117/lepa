@@ -9,14 +9,12 @@ duration=60
 m=2
 sup=1
 f=75
-sample_code="code/sample_ch2.R"
+mk=1
+sample_code="code/sample_ch2_mk.R"
 founder_gd="code/calc_gd_founders.R"
 slim_code="slim/code/101526_ch2"
 format_code="code/process_slim_vcf_ch2.R"
 calcgd_code="code/calc_gd_ch2.R"
-# rscript="/c/Program Files/R/R-4.6.1/bin/Rscript.exe"
-# plink1="/c/Users/kutlt017/Documents/plink_win64_20250819/plink.exe"
-# plink2="/c/Users/kutlt017/Documents/plink2_win64_20260504/plink2.exe"
 
 for i in $(seq 1 $niter); do
 echo "====================================================="
@@ -26,6 +24,7 @@ echo "====================================================="
 # sample founders and supplements
 echo -e "\nSampling founders and supplements..."
 Rscript ${sample_code} ${m} ${sup} ${f}
+
 # calculate pi
 echo -e "\nCalculating pi for founders..."
 if ! vcftools --vcf "slim/input_vcf/ch2/founders.vcf" --window-pi 150000 --out "slim/output/ch2/gd/founders" 2>/dev/null; then
@@ -35,7 +34,7 @@ fi
 
 # log results
 echo -e "\nLogging results for founders..."
-Rscript ${founder_gd} ${i} ${m} ${sup} ${f}
+Rscript ${founder_gd} ${i} ${m} ${sup} ${f} ${mk}
 
 # run slim - specify migration rate
 echo -e "\nRunning SLiM..."
@@ -93,7 +92,8 @@ fi
 
 # log results
 echo -e "\nLogging results..."
-Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f}
+Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f} ${mk}
+
 # remove file
 rm "slim/output_vcf/ch2/${file}.vcf"
 done
