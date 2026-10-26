@@ -1,6 +1,7 @@
-# range of roh
-all50 <- read.table("slim/output/offspring/log/best50_gd.txt", header = T) # ranges from 0-0.006
-all75 <- read.table("slim/output/offspring/log/best75_gd.txt", header = T) # ranges from 0.1-0.3
+# range of gd
+all50 <- read.table("slim/output/offspring/log/best50_gd.txt", header = T) # roh: 0-0.006, ho: 0.33-0.39
+all75 <- read.table("slim/output/offspring/log/best75_gd.txt", header = T) # roh: 0.1-0.3, ho: 0.2-0.32
+# 75% has more range -> more likely to 
 
 # read data
 gd <- read.table("slim/output/ch2/log/gd.txt", header = T)%>%

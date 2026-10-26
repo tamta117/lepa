@@ -1,31 +1,43 @@
 # parent selection schemes
+library(tidyverse)
 
+# KING square -----------------------------------------------------------------------------------------------------------
 # run KING
-system("plink2 --bfile filter/maf/maf0.1_thin_wmzf --make-king-table --out filter/maf/maf0.1_thin_wmzf")
+system("plink2 --bfile filter/maf/maf0.1_thin_wmzf --make-king square --out filter/maf/maf0.1_thin_wmzf")
 
 # read in KING table
-king <- read.table("filter/maf/maf0.1_thin_wmzf.kin0")
-names(king) <- c("fid1", "iid1", "fid2", "iid2", "n_loci", "hethet", "obshom", "k")
+id <- read.table("filter/maf/maf0.1_thin_wmzf.king.id")
+king <- read.table("filter/maf/maf0.1_thin_wmzf.king")%>%
+  setNames(id$V2)%>%
+  mutate(across(everything(), ~ if_else(. == 0.5, NA, .)),
+         iid = id$V2,
+         sex = if_else(str_detect(iid, "^\\d"), "female", "male"))
 
-# make matrix
-df <- data.frame(iid1 = king$iid2,
-                 iid2 = king$iid1,
-                 k = king$k)
-matrix <- bind_rows(select(king, c(iid1, iid2, k)), df)%>%
-  mutate(across(starts_with("iid"), ~ str_remove(., "_24|_25|_22")))%>%
-  pivot_wider(names_from = iid2, values_from = k)
+# calculate mk
+mk <- king%>%
+  mutate(mk = rowMeans(pick(where(is.numeric)), na.rm = T))%>%
+  select(iid, sex, mk)%>%
   
-
 # calculate mean for each individual
-mk <- matrix%>%
-  mutate(mk = rowMeans(pick(contains("_")), na.rm = T))%>%
-  select(indv1, mk)%>%
-  mutate(sex = if_else(str_detect(indv1, "ranch|refuge"), "male", "female"))
 pair <- mk%>%
-  arrange(mk)%>%
   group_by(sex)%>%
-  summarise(mk = min(mk, na.rm = T),
-            across(indv1, first))
+  slice_min(mk, n = 1)
+# individuals with highest FROH has lowest mean kinship
 
+# let's try sorting by pop
+wild <- king%>%
+  filter(sex == "male")%>%
+  select(!matches("^\\d"))%>%
+  mutate(mk = rowMeans(pick(where(is.numeric)), na.rm = T))%>%
+  select(iid, sex, mk)%>%
+  arrange(mk)
 
+# compare to original
+wild_mk <- filter(mk, sex == "male")%>%
+  arrange(mk)
+compare_wild <- bind_cols(wild, wild_mk)
 
+# KING table -----------------------------------------------------------------------------------------------------------
+king <- read.table("filter/maf/maf0.1_thin_wmzf.kin0")%>%
+  mutate(pair = paste0(V1, "_", V3))%>%
+  filter(pair %in% c("brazilian_ranch", "brazilian_refuge", "ranch_brazilian", "ranch_generic", "refuge_brazilian", "refuge_generic"))
