@@ -6,38 +6,42 @@ library(tidyverse)
 system("plink2 --bfile filter/maf/maf0.1_thin_wmzf --make-king square --out filter/maf/maf0.1_thin_wmzf")
 
 # read in KING table
-id <- read.table("filter/maf/maf0.1_thin_wmzf.king.id")
+id <- read.table("filter/maf/maf0.1_thin_wmzf.king.id")%>%
+  separate(V2, into = c("V2", "remove"), sep = "_")
 king <- read.table("filter/maf/maf0.1_thin_wmzf.king")%>%
   setNames(id$V2)%>%
-  mutate(across(everything(), ~ if_else(. == 0.5, NA, .)),
-         iid = id$V2,
-         sex = if_else(str_detect(iid, "^\\d"), "female", "male"))
+  mutate(across(everything(), ~ if_else(. == 0.5, NA, .)))
 
 # calculate mk
 mk <- king%>%
-  mutate(mk = rowMeans(pick(where(is.numeric)), na.rm = T))%>%
-  select(iid, sex, mk)%>%
-  
-# calculate mean for each individual
-pair <- mk%>%
+  mutate(mk = abs(rowMeans(as.matrix(king), na.rm = T)),
+         iid = id$V2,
+         sex = if_else(str_detect(iid, "^\\d"), "female", "male"))%>%
+  select(iid, sex, mk)
+write.table(mk, "filter/maf/maf0.1_thin_wmzf_mk.txt", row.names = F, col.names = T, quote = F, sep = "\t")
+
+# sample by weight and sex
+n <- 4
+pairs <- mk%>%
   group_by(sex)%>%
-  slice_min(mk, n = 1)
-# individuals with highest FROH has lowest mean kinship
-
-# let's try sorting by pop
-wild <- king%>%
-  filter(sex == "male")%>%
-  select(!matches("^\\d"))%>%
-  mutate(mk = rowMeans(pick(where(is.numeric)), na.rm = T))%>%
-  select(iid, sex, mk)%>%
+  sample_n(size = n, weight = mk)%>%
   arrange(mk)
 
-# compare to original
-wild_mk <- filter(mk, sex == "male")%>%
-  arrange(mk)
-compare_wild <- bind_cols(wild, wild_mk)
+# make pair names
+pairnames <- bind_cols(subset(pairs, sex == "female"), subset(pairs, sex == "male"))%>%
+  mutate(pair = paste0(iid...4, "_", iid...1),
+         pop = "p1")%>%
+  select(pop, pair)
+write.table(pairnames, "slim/files/offspring/founders_mk.txt", row.names = F, col.names = F, quote = F, sep = "\t")
 
-# KING table -----------------------------------------------------------------------------------------------------------
-king <- read.table("filter/maf/maf0.1_thin_wmzf.kin0")%>%
-  mutate(pair = paste0(V1, "_", V3))%>%
-  filter(pair %in% c("brazilian_ranch", "brazilian_refuge", "ranch_brazilian", "ranch_generic", "refuge_brazilian", "refuge_generic"))
+# subset pair
+system("plink2 --bfile slim/input_vcf/offspring/all50 --keep slim/files/offspring/founders_mk.txt --export vcf-4.2 --make-bed --out slim/input_vcf/ch2/founders")
+
+# write mk for all pairs
+parents <- expand.grid(mk$iid[mk$sex == "male"], mk$iid[mk$sex == "female"])%>%
+  left_join(select(mk, c(iid, mk1 = mk)), by = c("Var1" = "iid"))%>%
+  left_join(select(mk, c(iid, mk2 = mk)), by = c("Var2" = "iid"))%>%
+  mutate(sum_mk = mk1 + mk2,
+         pairs = paste0(Var1, "_", Var2),
+         pop = "p1")
+write.table(parents, "slim/files/50_mk.txt", row.names = F, col.names = T, quote = F, sep = "\t")

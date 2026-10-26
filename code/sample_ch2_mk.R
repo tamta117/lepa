@@ -8,7 +8,7 @@ sup <- as.numeric(args[2])
 f <- args[3]
 
 # read in mk
-parents <- read.table("slim/files/50_mk.txt", header = T)%>%
+parents <- read.table(paste0("slim/files/", f, "_mk.txt"), header = T)%>%
   filter(sum_mk > mean(sum_mk))
 
 # sample founders
@@ -29,4 +29,4 @@ n_indv <- m * n_sup
 supplement <- sample_n(left, size = n_indv, weight = sum_mk)%>%
   select(pop, pairs)
 write.table(supplement, "slim/files/offspring/supplement_mk.txt", row.names = F, col.names = F, quote = F, sep = "\t")
-system(paste0("plink2 --bfile slim/input_vcf/offspring/all", f, " --keep slim/files/offspring/supplement_mk.txt --silent --export vcf-4.2 --out slim/input_vcf/ch2/sup", n_indv, "_mk"))
+system(paste0("plink2 --bfile slim/input_vcf/offspring/all", f, " --keep slim/files/offspring/supplement_mk.txt --silent --export vcf-4.2 --out slim/input_vcf/ch2/sup"))
