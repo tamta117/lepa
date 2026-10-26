@@ -6,7 +6,7 @@ set -e
 # set constants
 niter=500
 duration=60
-m=2
+m=1
 sup=1
 f=75
 mk=1

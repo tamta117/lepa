@@ -34,7 +34,7 @@ initialize() {
 	
 	n_indv = mig_rate * length(sup_tick);
 	sim.addSubpop("p2", n_indv, sexRatio = 0.5);
-	p2.individuals.readIndividualsFromVCF("slim/input_vcf/ch2/sup" + n_indv + ".vcf", m1);
+	p2.individuals.readIndividualsFromVCF("slim/input_vcf/ch2/sup.vcf", m1);
 	
 	defineConstant("log", community.createLogFile("slim/output/ch2/log/ch2_log.txt", append = T, sep = "\t", header = F));
 	log.addCustomColumn("m", "mig_rate;");
