@@ -34,11 +34,11 @@ vignettes/*.pdf
 .httr-oauth
 
 # Project-specific data and output directories
-filter/
 slim/output_vcf/
 slim/input_vcf/
 slim/files/
 slim/output/ch2/gd/
+*.vcf
 
 # Documentation and deployment
 docs/
