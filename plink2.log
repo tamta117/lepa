@@ -1,0 +1,16 @@
+PLINK v2.0.0-b.1.2 64-bit (24 Oct 2026)
+Options in effect:
+  --bfile slim/input_vcf/offspring/all/all50
+  --export vcf-4.2
+  --keep slim/files/offspring/founders_mk.txt
+  --make-bed slim/input_vcf/ch2/founders
+
+Hostname: TAM
+Working directory: C:\Users\jelly\Documents\lepa
+Start time: Mon Oct 26 14:32:26 2026
+
+Error: Invalid --make-bed argument 'slim/input_vcf/ch2/founders'. (Did you
+forget '--out'?)
+For more info, try "plink2 --help <flag name>" or "plink2 --help | more".
+
+End time: Mon Oct 26 14:32:26 2026
