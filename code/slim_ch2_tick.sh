@@ -8,7 +8,7 @@ niter=500
 duration=60
 m=1
 sup=1
-f=75
+f=50
 mk=1
 sample_code="code/sample_ch2_mk.R"
 founder_gd="code/calc_gd_founders.R"
@@ -23,7 +23,7 @@ echo "====================================================="
 
 # sample founders and supplements
 echo -e "\nSampling founders and supplements..."
-Rscript ${sample_code} ${m} ${sup} ${f}
+Rscript ${sample_code} ${m} ${sup} ${f} ${mk}
 
 # calculate pi
 echo -e "\nCalculating pi for founders..."

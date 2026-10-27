@@ -13,20 +13,40 @@ parents <- read.table(paste0("slim/files/", f, "_mk.txt"), header = T)%>%
   filter(sum_mk > mean(sum_mk))
 
 # sample founders
-if (mk == 0) {
-  repeat {
-    founders <- slice_sample(parents, n = 4)
-    if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4) {
-      founders <- select(founders, c(pop, pairs))
-      break
+if (f == "50") {
+  if (mk == 0) {
+    repeat {
+      founders <- slice_sample(parents, n = 4)
+      if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4) {
+        founders <- select(founders, c(pop, pairs))
+        break
+      }
+    }
+  } else {
+    repeat {
+      founders <- slice_sample(parents, n = 4, weight_by = parents$sum_mk)
+      if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4) {
+        founders <- select(founders, c(pop, pairs))
+        break
+      }
     }
   }
 } else {
-  repeat {
-    founders <- slice_sample(parents, n = 4, weight_by = parents$sum_mk)
-    if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4) {
-      founders <- select(founders, c(pop, pairs))
-      break
+  if (mk == 0) {
+    repeat {
+      founders <- slice_sample(parents, n = 4)
+      if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4 & n_distinct(founders$par1) == 4 & any(founders$Var1 %in% founders$par1) == F) {
+        founders <- select(founders, c(pop, pairs))
+        break
+      }
+    }
+  } else {
+    repeat {
+      founders <- slice_sample(parents, n = 4, weight_by = parents$sum_mk)
+      if (n_distinct(founders$Var1) == 4 & n_distinct(founders$Var2) == 4 & n_distinct(founders$par1) == 4 & any(founders$Var1 %in% founders$par1) == F) {
+        founders <- select(founders, c(pop, pairs))
+        break
+      }
     }
   }
 }
