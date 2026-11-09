@@ -4,7 +4,7 @@ initialize() {
 	initializeSLiMModelType("nonWF");
 	initializeSLiMOptions(nucleotideBased = T);
 	initializeSex();
-	defineConstant("K", 30);
+	defineConstant("K", k);
 	defineConstant("tick", seq(1, 61, by = 10));
 	defineConstant("sup_tick", seq(1 + sup, 61, by = sup));
 	recom = 1.1e-8;

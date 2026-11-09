@@ -1,24 +1,23 @@
-PLINK v2.0.0-b.1.2 64-bit (24 Oct 2026)
+PLINK v2.0.0-a.7 M1 (19 Aug 2025)
 Options in effect:
   --bfile filter/maf/maf0.1_thin_wmzf
-  --make-king square
+  --make-king-table
   --out filter/maf/maf0.1_thin_wmzf
 
-Hostname: TAM
-Working directory: C:\Users\jelly\Documents\lepa
-Start time: Mon Oct 26 13:29:45 2026
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Fri Oct 30 10:02:05 2026
 
-Random number seed: 1793039385
-15650 MiB RAM detected; reserving 7825 MiB for main workspace.
-Using up to 16 threads (change this with --threads).
+Random number seed: 1793372525
+262144 MiB RAM detected; reserving 131072 MiB for main workspace.
+Using up to 28 threads (change this with --threads).
 58 samples (24 females, 34 males; 58 founders) loaded from
 filter/maf/maf0.1_thin_wmzf.fam.
 430782 variants loaded from filter/maf/maf0.1_thin_wmzf.bim.
 Note: No phenotype data present.
---make-king pass 1/1: Scanning for rare variants... done.
+--make-king-table pass 1/1: Scanning for rare variants... done.
 0 variants handled by initial scan (430782 remaining).
---make-king: 430782 variants processed.
-Results written to filter/maf/maf0.1_thin_wmzf.king and
-filter/maf/maf0.1_thin_wmzf.king.id .
+--make-king-table: 430782 variants processed.
+Results written to filter/maf/maf0.1_thin_wmzf.kin0 .
 
-End time: Mon Oct 26 13:29:46 2026
+End time: Fri Oct 30 10:02:05 2026

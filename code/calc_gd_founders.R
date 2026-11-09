@@ -8,6 +8,7 @@ mig_rate <- args[2]
 sup <- args[3]
 f <- args[4]
 mk <- args[5]
+k <- args[6]
 
 #### fam ----------------------------------------------------------------------------------------------------------------
 fam <- read.table("slim/input_vcf/ch2/founders.fam")
@@ -30,7 +31,8 @@ log <- bind_cols(pi, gd)%>%
          tick = 1,
          n = 4,
          f = f,
-         mk = mk)%>%
-  select(iter, f, mk, m, duration, sup, tick, n, pi, ho, roh)
+         mk = mk,
+         k = k)%>%
+  select(iter, f, mk, k, m, duration, sup, tick, n, pi, ho, roh)
 outfile <- "slim/output/ch2/log/gd.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)

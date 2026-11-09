@@ -8,9 +8,10 @@ niter=500
 duration=60
 m=1
 sup=1
-f=50
-mk=1
-sample_code="code/sample_ch2_mk.R"
+f=75
+mk=4
+k=30
+sample_code="code/sample_ch2_obshom.R"
 founder_gd="code/calc_gd_founders.R"
 slim_code="slim/code/101526_ch2"
 format_code="code/process_slim_vcf_ch2.R"
@@ -34,11 +35,11 @@ fi
 
 # log results
 echo -e "\nLogging results for founders..."
-Rscript ${founder_gd} ${i} ${m} ${sup} ${f} ${mk}
+Rscript ${founder_gd} ${i} ${m} ${sup} ${f} ${mk} ${k}
 
 # run slim - specify migration rate
 echo -e "\nRunning SLiM..."
-slim -d iter=${i} -d mig_rate=${m} -d sup=${sup} ${slim_code}
+slim -d k=${k} -d iter=${i} -d mig_rate=${m} -d sup=${sup} ${slim_code}
 
 # continue to next iteration if extinct
 if [ ! -f "slim/output_vcf/ch2/sim11.vcf" ]; then
@@ -92,7 +93,7 @@ fi
 
 # log results
 echo -e "\nLogging results..."
-Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f} ${mk}
+Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f} ${mk} ${k}
 
 # remove file
 rm "slim/output_vcf/ch2/${file}.vcf"
