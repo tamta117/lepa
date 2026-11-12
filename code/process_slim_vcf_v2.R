@@ -2,9 +2,6 @@
 suppressPackageStartupMessages(library(tidyverse, quietly = T))
 suppressPackageStartupMessages(library(genio, quietly = T))
 
-# define constants
-plink2 <- "C:/Users/kutlt017/Documents/plink2_win64_20260504/plink2.exe"
-
 # define arguments
 args <- commandArgs(trailingOnly = TRUE)
 file <- args[1]
@@ -52,20 +49,18 @@ new_bed <- gt %>%
 write_bed(paste0("slim/output_vcf/ch1/", file, ".bed"), as.matrix(new_bed))  
 
 # write new vcf 
-system(paste0(plink2, " --bfile slim/output_vcf/ch1/", file, " --chr-set 17 --export vcf-4.2 --out slim/output_vcf/ch1/", file, "_all"))
-
-# extract ranch and refuge
-ranch <- filter(new_fam[,1:2], fid == "p1")
-refuge <- filter(new_fam[,1:2], fid == "p2")
-write.table(ranch, "slim/output_vcf/ch1/ranch.txt", row.names = F, col.names = F, quote = F)
-write.table(refuge, "slim/output_vcf/ch1/refuge.txt", row.names = F, col.names = F, quote = F)
-system(paste0(plink2, " --bfile slim/output_vcf/ch1/", file, " --chr-set 17 --keep slim/output_vcf/ch1/ranch.txt --make-bed --export vcf-4.2 --out slim/output_vcf/ch1/", file, "_ranch"))
-system(paste0(plink2, " --bfile slim/output_vcf/ch1/", file, " --chr-set 17 --keep slim/output_vcf/ch1/refuge.txt --make-bed --export vcf-4.2 --out slim/output_vcf/ch1/", file, "_refuge"))
+system(paste0("plink2 --bfile slim/output_vcf/ch1/", file, " --chr-set 17 --export vcf-4.2 --out slim/output_vcf/ch1/", file))
 
 # write fst pop file
-ranch_fst <- ranch%>%
-  mutate(fst = paste0(fid, "_", iid))
-write.table(select(ranch_fst, fst), "slim/files/ranch_fst.txt", row.names = F, col.names = F, quote = F)
-refuge_fst <- refuge%>%
-  mutate(fst = paste0(fid, "_", iid))
-write.table(select(refuge_fst, fst), "slim/files/refuge_fst.txt", row.names = F, col.names = F, quote = F)
+ranch <- filter(new_fam[,1:2], fid == "p1")
+refuge <- filter(new_fam[,1:2], fid == "p2")
+if (nrow(ranch) != 0) {
+  ranch_fst <- ranch%>%
+    mutate(fst = paste0(fid, "_", iid))
+  write.table(select(ranch_fst, fst), "slim/files/ranch_fst.txt", row.names = F, col.names = F, quote = F)
+}
+if (nrow(refuge) != 0) {
+  refuge_fst <- refuge%>%
+    mutate(fst = paste0(fid, "_", iid))
+  write.table(select(refuge_fst, fst), "slim/files/refuge_fst.txt", row.names = F, col.names = F, quote = F)
+}

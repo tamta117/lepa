@@ -1,0 +1,31 @@
+PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+Options in effect:
+  --het
+  --out filter/maf/maf0.1_thin_ranch_ch1
+  --read-freq filter/maf/maf0.1_thin_ranch_ch1.afreq
+  --vcf filter/maf/maf0.1_thin_ranch_ch1.vcf
+
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Tue Nov 10 14:09:53 2026
+
+Random number seed: 1794341393
+262144 MiB RAM detected; reserving 131072 MiB for main workspace.
+Using up to 28 threads (change this with --threads).
+--vcf: 45115 variants scanned.
+--vcf: filter/maf/maf0.1_thin_ranch_ch1-temporary.pgen +
+filter/maf/maf0.1_thin_ranch_ch1-temporary.pvar.zst +
+filter/maf/maf0.1_thin_ranch_ch1-temporary.psam written.
+25 samples (0 females, 0 males, 25 ambiguous; 25 founders) loaded from
+filter/maf/maf0.1_thin_ranch_ch1-temporary.psam.
+chrSet header line: 17 autosome pairs.
+45115 variants loaded from filter/maf/maf0.1_thin_ranch_ch1-temporary.pvar.zst.
+Note: No phenotype data present.
+--read-freq: PLINK 2 --freq file detected.
+--read-freq: Frequencies for 45115 variants loaded.
+--het: done.
+Warning: 11241 variants skipped because they were monomorphic. You may want to
+use --read-freq to provide more accurate allele frequency estimates.
+--het: Results written to filter/maf/maf0.1_thin_ranch_ch1.het .
+
+End time: Tue Nov 10 14:09:53 2026

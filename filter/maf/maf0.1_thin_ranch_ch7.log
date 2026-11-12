@@ -1,0 +1,26 @@
+PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+Options in effect:
+  --chr 7
+  --export vcf-4.2
+  --out filter/maf/maf0.1_thin_ranch_ch7
+  --vcf filter/maf/maf0.1_thin_ranch.vcf
+
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Tue Nov 10 13:22:29 2026
+
+Random number seed: 1794338549
+262144 MiB RAM detected; reserving 131072 MiB for main workspace.
+Using up to 28 threads (change this with --threads).
+--vcf: 26660 variants scanned (404122 skipped).
+--vcf: filter/maf/maf0.1_thin_ranch_ch7-temporary.pgen +
+filter/maf/maf0.1_thin_ranch_ch7-temporary.pvar.zst +
+filter/maf/maf0.1_thin_ranch_ch7-temporary.psam written.
+25 samples (0 females, 0 males, 25 ambiguous; 25 founders) loaded from
+filter/maf/maf0.1_thin_ranch_ch7-temporary.psam.
+chrSet header line: 17 autosome pairs.
+26660 variants loaded from filter/maf/maf0.1_thin_ranch_ch7-temporary.pvar.zst.
+Note: No phenotype data present.
+--export vcf to filter/maf/maf0.1_thin_ranch_ch7.vcf ... done.
+
+End time: Tue Nov 10 13:22:29 2026

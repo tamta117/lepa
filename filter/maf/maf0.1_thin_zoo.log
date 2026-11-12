@@ -1,24 +1,22 @@
-PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+PLINK v1.9.0-b.7.11 64-bit (19 Aug 2025)
 Options in effect:
   --bfile filter/maf/maf0.1_thin_zoo
-  --make-king square
+  --freqx
   --out filter/maf/maf0.1_thin_zoo
 
 Hostname: HAGL159-YH7LQMV
 Working directory: /Users/kutlt017/Documents/lepa
-Start time: Wed Oct 28 16:16:24 2026
+Start time: Wed Nov 11 10:29:02 2026
 
-Random number seed: 1793222184
-262144 MiB RAM detected; reserving 131072 MiB for main workspace.
-Using up to 28 threads (change this with --threads).
-24 samples (24 females, 0 males; 24 founders) loaded from
-filter/maf/maf0.1_thin_zoo.fam.
-430782 variants loaded from filter/maf/maf0.1_thin_zoo.bim.
-Note: No phenotype data present.
---make-king pass 1/1: Scanning for rare variants... done.
-144817 variants handled by initial scan (285965 remaining).
---make-king: 430782 variants processed.
-Results written to filter/maf/maf0.1_thin_zoo.king and
-filter/maf/maf0.1_thin_zoo.king.id .
+Random number seed: 1794414542
+262144 MB RAM detected; reserving 131072 MB for main workspace.
+430782 variants loaded from .bim file.
+24 people (0 males, 24 females) loaded from .fam.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 24 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is exactly 1.
+--freqx: Allele frequencies (founders only) written to
+filter/maf/maf0.1_thin_zoo.frqx .
 
-End time: Wed Oct 28 16:16:24 2026
+End time: Wed Nov 11 10:29:02 2026

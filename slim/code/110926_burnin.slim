@@ -1,0 +1,52 @@
+initialize() {
+	initializeSLiMModelType("nonWF");
+	initializeSex();
+	defineConstant("K", 500);
+	
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
+}
+
+1 early() {
+	sim.addSubpop("p1", 125, sexRatio = 0.5);
+}
+
+1 late() {
+	age1 = p1.sampleIndividuals(15);
+	age1.age = 1;
+	age2 = p1.sampleIndividuals(85, maxAge = 0);
+	do {ages = asInteger(round(rgamma(85, 6.75, 5)));} while (length(ages[ages > 14]) > 0);
+	age2.age = ages;
+}
+
+500:875 late() {
+	kill = p1.sampleIndividuals(p1.individualCount - (275 - ((sim.cycle - 500) * 7 / 15)));
+	sim.killIndividuals(kill);
+}
+
+reproduction() {
+	females = p1.sampleIndividuals(asInteger(0.3 * p1.individuals[p1.individuals.sex == "F"].size()), sex = "F");
+	for (f in females) {
+		do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); } while (littersize <= 0);
+		p1.addCrossed(f, p1.sampleIndividuals(1, sex = "M"), count = littersize);
+	}
+	self.active = 0;
+}
+
+//early() {
+//	p1.fitnessScaling = K / p1.individualCount;
+//}
+
+//late() {
+//	inds = p1.individuals;
+//	catn(sim.cycle + ": " + size(inds) + " (" + max(inds.age) + ")");
+//}
+
+1000 late() {
+	sim.simulationFinished();
+}

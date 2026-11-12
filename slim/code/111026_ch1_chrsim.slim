@@ -1,0 +1,21 @@
+initialize() {
+	initializeSLiMOptions(nucleotideBased = T);
+	length = initializeAncestralNucleotides("slim/files/fasta/" + chr + ".fasta");
+	defineConstant("L", length);
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = F;
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(2.86667e-09));
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1.1e-8);
+}
+
+1 late() {
+	sim.addSubpop("p1", 25);
+	p1.haplosomes.readHaplosomesFromVCF("filter/maf/maf0.1_thin_refuge_ch" + chr + ".vcf", m1);
+	p1.setSubpopulationSize(120);
+}
+
+2 late() {
+	sim.simulationFinished();
+	p1.individuals.outputIndividualsToVCF("slim/output_vcf/ch1/chr/" + chr + ".vcf", outputMultiallelics = F, simplifyNucleotides = T);
+}

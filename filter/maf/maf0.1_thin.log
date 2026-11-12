@@ -1,0 +1,24 @@
+PLINK v1.9.0-b.7.11 64-bit (19 Aug 2025)
+Options in effect:
+  --bfile filter/maf/maf0.1_thin
+  --freq
+  --out filter/maf/maf0.1_thin
+  --within odata/family_cluster.txt
+
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Wed Nov 11 11:06:10 2026
+
+Random number seed: 1794416770
+262144 MB RAM detected; reserving 131072 MB for main workspace.
+430782 variants loaded from .bim file.
+74 people (34 males, 40 females) loaded from .fam.
+--within: 2 clusters loaded, covering a total of 74 people.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 74 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is exactly 1.
+--freq: Cluster-stratified allele frequencies (founders only) written to
+filter/maf/maf0.1_thin.frq.strat .
+
+End time: Wed Nov 11 11:06:11 2026

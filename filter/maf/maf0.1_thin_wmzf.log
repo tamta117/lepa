@@ -1,23 +1,29 @@
-PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+PLINK v1.9.0-b.7.11 64-bit (19 Aug 2025)
 Options in effect:
   --bfile filter/maf/maf0.1_thin_wmzf
-  --make-king-table
+  --fst
   --out filter/maf/maf0.1_thin_wmzf
+  --within odata/family_cluster.txt
 
 Hostname: HAGL159-YH7LQMV
 Working directory: /Users/kutlt017/Documents/lepa
-Start time: Fri Oct 30 10:02:05 2026
+Start time: Wed Nov 11 11:13:40 2026
 
-Random number seed: 1793372525
-262144 MiB RAM detected; reserving 131072 MiB for main workspace.
-Using up to 28 threads (change this with --threads).
-58 samples (24 females, 34 males; 58 founders) loaded from
-filter/maf/maf0.1_thin_wmzf.fam.
-430782 variants loaded from filter/maf/maf0.1_thin_wmzf.bim.
-Note: No phenotype data present.
---make-king-table pass 1/1: Scanning for rare variants... done.
-0 variants handled by initial scan (430782 remaining).
---make-king-table: 430782 variants processed.
-Results written to filter/maf/maf0.1_thin_wmzf.kin0 .
+Random number seed: 1794417220
+262144 MB RAM detected; reserving 131072 MB for main workspace.
+430782 variants loaded from .bim file.
+58 people (34 males, 24 females) loaded from .fam.
+--within: 2 clusters loaded, covering a total of 58 people.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 58 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is exactly 1.
+430782 variants and 58 people pass filters and QC.
+Note: No phenotypes present.
+Writing --fst report (2 populations) to filter/maf/maf0.1_thin_wmzf.fst ...
+done.
+430782 markers with valid Fst estimates.
+Mean Fst estimate: 0.397737
+Weighted Fst estimate: 0.498287
 
-End time: Fri Oct 30 10:02:05 2026
+End time: Wed Nov 11 11:13:40 2026

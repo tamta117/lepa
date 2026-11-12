@@ -52,6 +52,19 @@ ggplot(subset(pivot, mk != 3 & m == 1 & sup == 1), aes(tick, values))+
        linetype = "Texas ancestry proportion")+
   theme(axis.title.y = element_blank(),
         legend.key = element_rect(fill = NA))
+ggplot(subset(pivot, mk != 3 & f == 75 & m == 1 & sup == 1), aes(tick, values))+
+  geom_smooth(aes(color = factor(mk), fill = factor(mk)), method = "loess", span = 0.7)+
+  facet_wrap(~ metrics, scales = "free_y", labeller = labeller(metrics = as_labeller(c("ho" = "H[o]", "pi" = "pi", "roh" = "F[ROH]"), label_parsed)))+
+  scale_color_discrete(labels = c("Random", "Mean kinship", "Opposite homozygous"))+
+  scale_fill_discrete(labels = c("Random", "Mean kinship", "Opposite homozygous"))+
+  guides(linetype = guide_legend(override.aes = list(color = "black", fill = NA)),
+         color = guide_legend(override.aes = list(fill = NA)))+
+  labs(x = "Year",
+       color = "Mating selection strategy",
+       fill = "Mating selection strategy",
+       title = "75% Texas ancestry")+
+  theme(axis.title.y = element_blank(),
+        legend.key = element_rect(fill = NA))
 
 # plot k
 ggplot(subset(pivot, mk == 0 & m == 1 & sup == 1 & f == 50), aes(tick, values))+
