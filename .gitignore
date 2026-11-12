@@ -45,3 +45,6 @@ docs/
 po/*~
 rsconnect/
 .positai
+
+# Large generated analysis files
+*.frq.strat

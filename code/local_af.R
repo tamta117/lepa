@@ -21,7 +21,7 @@ obshom <- filter(af, wild == 0 & zoo == 1)
 # 7287 variants
 
 # check with fst
-system("plink --bfile filter/maf/maf0.1_thin_wmzf --fst --within odata/family_cluster.txt --out filter/maf/maf0.1_thin_wmzf")
+system("plink --bfile filter/maf/maf0.1_thin --fst --within odata/family_cluster.txt --out filter/maf/maf0.1_thin")
 fst <- read.table("filter/maf/maf0.1_thin_wmzf.fst", header = T)%>%
   janitor::clean_names()%>%
   filter(fst == 1)
@@ -45,4 +45,15 @@ length(which(bim$V6 == bim$REF)) # 7915
 # final outliers = 7915 where REF is predominant in wild (0-0.08) and not found in zoo
 
 # export outliers
-write.table(select(bim, 1:2), "filter/maf/maf0.1_thin_outliers.txt", row.names = F, col.names = F, quote = F, sep = "\t")
+write.table(select(bim, c("chr" = "V1", "snp" = "V2", REF, ALT)), "filter/maf/maf0.1_thin_outliers.txt", row.names = F, col.names = T, quote = F, sep = "\t")
+
+# calculate baseline local af
+af <- read.table("filter/maf/maf0.1_thin.frq.strat", header = T)%>%
+  janitor::clean_names()%>%
+  select(1:6)%>%
+  semi_join(fst, by = c("chr", "snp"))%>%
+  mutate(af = 1 - maf)%>%
+  group_by(clst)%>%
+  summarise(mean = mean(af))
+# ranch: 0.9970284  
+# refuge: 0.9999242

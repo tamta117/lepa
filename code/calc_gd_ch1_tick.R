@@ -15,6 +15,18 @@ maxage <- args[6]
 pop <- c("ranch", "refuge")
 tick <- as.integer(str_extract_all(file, "\\d+"))
 
+#### local af -----------------------------------------------------------------------------------------------------------
+system(paste0("plink --bfile slim/output_vcf/ch1/", file, " --freq --family --out slim/output/ch1/gd/", file))
+outliers <- read.table("filter/maf/maf0.1_thin_outliers.txt", header = T)
+af <- read.table(paste0("slim/output/ch1/gd/", file, ".frq.strat"), header = T)%>%
+  janitor::clean_names()%>%
+  semi_join(outliers, by = c("chr", "snp"))%>%
+  left_join(outliers, by = c("chr", "snp"))%>%
+  mutate(af = if_else(REF == a2, 1 - maf, maf),
+         pop = if_else(clst == "p1", "ranch", "refuge"))%>%
+  group_by(pop)%>%
+  summarise(laf = mean(af))
+
 #### het ----------------------------------------------------------------------------------------------------------------
 
 bim <- read.table(paste0("slim/output_vcf/ch1/", file, ".bim"))
@@ -59,6 +71,7 @@ if (file.exists(paste0("slim/output/ch1/gd/", file, ".windowed.weir.fst"))) {
 #### log file ------------------------------------------------------------------------------------------------------------
 
 log <- left_join(roh, het, by = "pop")%>%
+  left_join(af, by = "pop")%>%
   mutate(fst = fst$fst,
          iter = iter,
          m = mig_rate,
@@ -68,6 +81,6 @@ log <- left_join(roh, het, by = "pop")%>%
          migrant = if_else(mig_rate == 0, "none", "wild"),
          max_repro_age = maxage,
          n = if_else(is.na(n), 0, n))%>%
-  select(migrant, iter, m, duration, sup, max_repro_age, tick, pop, n, he, ho, roh, fst)
+  select(migrant, iter, m, duration, sup, max_repro_age, tick, pop, n, he, ho, roh, fst, laf)
 outfile <- "slim/output/ch1/log/rerun_maxage13.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)
