@@ -1,22 +1,25 @@
 PLINK v1.9.0-b.7.11 64-bit (19 Aug 2025)
 Options in effect:
   --bfile filter/maf/maf0.1_thin_wild
-  --freqx
   --out filter/maf/maf0.1_thin_wild
+  --pca
 
 Hostname: HAGL159-YH7LQMV
 Working directory: /Users/kutlt017/Documents/lepa
-Start time: Wed Nov 11 10:28:57 2026
+Start time: Thu Nov 12 14:08:41 2026
 
-Random number seed: 1794414537
+Random number seed: 1794514121
 262144 MB RAM detected; reserving 131072 MB for main workspace.
 430782 variants loaded from .bim file.
 50 people (34 males, 16 females) loaded from .fam.
-Using 1 thread (no multithreaded calculations invoked).
+Using up to 27 threads (change this with --threads).
 Before main variant filters, 50 founders and 0 nonfounders present.
 Calculating allele frequencies... done.
 Total genotyping rate is exactly 1.
---freqx: Allele frequencies (founders only) written to
-filter/maf/maf0.1_thin_wild.frqx .
+430782 variants and 50 people pass filters and QC.
+Note: No phenotypes present.
+Relationship matrix calculation complete.
+--pca: Results saved to filter/maf/maf0.1_thin_wild.eigenval and
+filter/maf/maf0.1_thin_wild.eigenvec .
 
-End time: Wed Nov 11 10:28:57 2026
+End time: Thu Nov 12 14:08:41 2026

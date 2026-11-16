@@ -1,0 +1,27 @@
+PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+Options in effect:
+  --bfile filter/maf/maf0.1_thin_ranch
+  --export vcf-4.2
+  --make-bed
+  --out filter/maf/maf0.1_thin_ranch_nodis
+  --remove odata/ranch_dispersers.txt
+
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Fri Nov 13 08:19:44 2026
+
+Random number seed: 1794579584
+262144 MiB RAM detected; reserving 131072 MiB for main workspace.
+Using up to 28 threads (change this with --threads).
+25 samples (12 females, 13 males; 25 founders) loaded from
+filter/maf/maf0.1_thin_ranch.fam.
+430782 variants loaded from filter/maf/maf0.1_thin_ranch.bim.
+Note: No phenotype data present.
+--remove: 23 samples remaining.
+23 samples (12 females, 11 males; 23 founders) remaining after main filters.
+Writing filter/maf/maf0.1_thin_ranch_nodis.fam ... done.
+Writing filter/maf/maf0.1_thin_ranch_nodis.bim ... done.
+Writing filter/maf/maf0.1_thin_ranch_nodis.bed ... done.
+--export vcf to filter/maf/maf0.1_thin_ranch_nodis.vcf ... done.
+
+End time: Fri Nov 13 08:19:44 2026

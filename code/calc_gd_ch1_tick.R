@@ -82,5 +82,5 @@ log <- left_join(roh, het, by = "pop")%>%
          max_repro_age = maxage,
          n = if_else(is.na(n), 0, n))%>%
   select(migrant, iter, m, duration, sup, max_repro_age, tick, pop, n, he, ho, roh, fst, laf)
-outfile <- "slim/output/ch1/log/rerun_maxage13.txt"
+outfile <- "slim/output/ch1/log/gd_v2.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)

@@ -1,0 +1,29 @@
+PLINK v2.0.0-a.7 M1 (19 Aug 2025)
+Options in effect:
+  --bfile filter/maf/maf0.1_thin_refuge
+  --export vcf-4.2
+  --make-bed
+  --out filter/maf/maf0.1_thin_refuge_nodis
+  --remove odata/refuge_dispersers.txt
+
+Hostname: HAGL159-YH7LQMV
+Working directory: /Users/kutlt017/Documents/lepa
+Start time: Fri Nov 13 08:19:45 2026
+
+Random number seed: 1794579585
+262144 MiB RAM detected; reserving 131072 MiB for main workspace.
+Using up to 28 threads (change this with --threads).
+25 samples (4 females, 21 males; 25 founders) loaded from
+filter/maf/maf0.1_thin_refuge.fam.
+430782 variants loaded from filter/maf/maf0.1_thin_refuge.bim.
+Note: No phenotype data present.
+--remove: 16 samples remaining.
+16 samples (3 females, 13 males; 16 founders) remaining after main filters.
+Writing filter/maf/maf0.1_thin_refuge_nodis.fam ... done.
+Writing filter/maf/maf0.1_thin_refuge_nodis.bim ... done.
+Writing filter/maf/maf0.1_thin_refuge_nodis.bed ... done.
+Warning: '_' present in original sample IDs; --vcf will not be able to
+reconstruct them. Consider rerunning with a suitable --export id-delim= value.
+--export vcf to filter/maf/maf0.1_thin_refuge_nodis.vcf ... done.
+
+End time: Fri Nov 13 08:19:45 2026

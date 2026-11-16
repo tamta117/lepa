@@ -4,23 +4,23 @@
 set -e
 
 # set constants
-niter=500
+niter=100
 duration=60
-m=0
+m=0.5
 sup=1
 maxage=13
-slim_code="slim/code/111026_ch1_nuc.slim"
+slim_code="slim/code/111326_ch1_lowm.slim"
 format_code="code/process_slim_vcf_v2.R"
 calcgd_code="code/calc_gd_ch1_tick.R"
 
-for i in $(seq 136 $niter); do
+for i in $(seq 79 $niter); do
 echo "====================================================="
 echo "Starting iteration $i for wild m = ${m}"
 echo "====================================================="
 
 # run slim - specify migration rate
 echo -e "\nRunning SLiM..."
-slim -d sup=${sup} -d mig_rate=${m} -d iter=${i} -d duration=${duration} -d maxage=${maxage} ${slim_code}
+slim -d sup=${sup} -d mig_rate=${m} -d iter=${i} -d duration=${duration} ${slim_code}
 
 # loop through output folder
 for file in slim/output_vcf/ch1/sup*.vcf; do

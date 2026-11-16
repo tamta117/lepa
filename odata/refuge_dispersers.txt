@@ -1,0 +1,9 @@
+refuge	E32M
+refuge	LO01F
+refuge	LO03M
+refuge	OM331
+refuge	LAO02M_25
+refuge	LAO04M_24
+refuge	LAO05M_25
+refuge	LO02M_22
+refuge	OM341
