@@ -9,7 +9,6 @@ iter <- args[2]
 mig_rate <- args[3]
 duration <- args[4]
 sup <- args[5]
-maxage <- args[6]
 
 # set constants
 pop <- c("ranch", "refuge")
@@ -79,8 +78,7 @@ log <- left_join(roh, het, by = "pop")%>%
          sup = sup,
          tick = tick,
          migrant = if_else(mig_rate == 0, "none", "wild"),
-         max_repro_age = maxage,
          n = if_else(is.na(n), 0, n))%>%
-  select(migrant, iter, m, duration, sup, max_repro_age, tick, pop, n, he, ho, roh, fst, laf)
-outfile <- "slim/output/ch1/log/gd_v2.txt"
+  select(migrant, iter, m, duration, sup, tick, pop, n, he, ho, roh, fst, laf)
+outfile <- "slim/output/ch1/log/gd.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)

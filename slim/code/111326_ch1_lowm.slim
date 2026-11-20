@@ -6,6 +6,7 @@ initialize() {
 	initializeSex();
 	defineConstant("K", 25);
 	defineConstant("tick", seq(11, 61, by = 10));
+	defineConstant("mig_tick", seq(2, 61, by = 2));
 	recom = 1.1e-8;
 	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
 	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(2.86667e-09));
@@ -32,7 +33,7 @@ initialize() {
 		age1 = s.sampleIndividuals(3);
 		age1.age = 1;
 		age2 = s.sampleIndividuals(17, maxAge = 0);
-		ages = asInteger(round(rgamma(17, 6.75, 5)));
+		do {ages = asInteger(round(rgamma(17, 6.75, 5))) - 1;} while (any(ages < 2));
 		age2.age = ages;
 	}
 	defineConstant("log", community.createLogFile("slim/output/ch1/log/wild.txt", append = T, sep = "\t", header = F));
@@ -49,36 +50,38 @@ initialize() {
 // reproduction with Ne, random prob of sex
 reproduction() {
 	// sample focal females
-	nb = rnorm(1, mean = 0.52, sd = 0.045);
+	do {nb = rnorm(1, mean = 0.52, sd = 0.045);} while (nb < 0);
 	for (s in sim.subpopulations) {
-		females = s.subsetIndividuals(sex = "F", minAge = 3, maxAge = 13);
+		females = s.subsetIndividuals(sex = "F", minAge = 2, maxAge = 12);
 		if (females.size() == 0) { next; } // do not reproduce if no females available
 		do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
-		reproduce = s.sampleIndividuals(breeders, sex = "F", minAge = 3, maxAge = 13);
+		reproduce = s.sampleIndividuals(breeders, sex = "F", minAge = 2, maxAge = 12);
 		
 		// reproduce
 		for (i in reproduce) {
-			male = s.sampleIndividuals(1, sex = "M", minAge = 4, maxAge = 13);
+			male = s.sampleIndividuals(1, sex = "M", minAge = 3, maxAge = 12);
 			// do not reproduce if no male available
 			if (male.size() == 0) { next; }
-			do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); } while (littersize <= 0);
+			do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
+			while (littersize <= 0);
 			s.addCrossed(i, male, count = littersize);
 		}
 	}
 	self.active = 0;
 }
 
-2: early() {
-
-// random migration -- total 1 per tick
+mig_tick early() {
+	// random migration -- total 1 every other tick
 	draw = rbinom(1, 1, 0.5);
 	if (draw == 0) { source = p1;
 		dest = p2; }
 	else { source = p2;
 		dest = p1; }
-	mig = source.sampleIndividuals(1, minAge = 2, maxAge = 3);
+	mig = source.sampleIndividuals(1, sex = "M", minAge = 1, maxAge = 1);
 	dest.takeMigrants(mig);
-	
+}
+
+2: early() {
 	// age-structured survival
 	do { surf = runif(1, 0.2, 0.68); } while (surf > 1);
 	do { sura = rbeta(1, alpha = 25, beta = 2); } while (sura > 1);
@@ -86,11 +89,10 @@ reproduction() {
 	for (s in sim.subpopulations) {
 		inds = s.individuals;
 		ages = inds.age;
-		migs = inds.migrant;
-		inds1 = inds[ages < 1];
-		inds2 = inds[ages >= 1 & ages < 16 & migs == F];
-		inds10 = inds[ages >= 16];
-		mig = inds[migs == T];
+		inds1 = inds[ages == 0];
+		inds2 = inds[ages >= 2 & ages < 15];
+		inds10 = inds[ages >= 15];
+		mig = inds[ages == 1];
 		death1 = rbinom(1, inds1.size(), 1 - surf);
 		death2 = rbinom(1, inds2.size(), 1 - sura);
 		deathm = rbinom(1, mig.size(), 1 - surt);

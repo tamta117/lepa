@@ -8,12 +8,11 @@ niter=500
 duration=60
 m=1
 sup=1
-f=75
-mk=4
+f=50
 k=30
-sample_code="code/sample_ch2_obshom.R"
+sample_code="code/sample_ch2.R"
 founder_gd="code/calc_gd_founders.R"
-slim_code="slim/code/101526_ch2"
+slim_code="slim/code/101526_ch2.slim"
 format_code="code/process_slim_vcf_ch2.R"
 calcgd_code="code/calc_gd_ch2.R"
 
@@ -24,18 +23,11 @@ echo "====================================================="
 
 # sample founders and supplements
 echo -e "\nSampling founders and supplements..."
-Rscript ${sample_code} ${m} ${sup} ${f} ${mk}
-
-# calculate pi
-echo -e "\nCalculating pi for founders..."
-if ! vcftools --vcf "slim/input_vcf/ch2/founders.vcf" --window-pi 150000 --out "slim/output/ch2/gd/founders" 2>/dev/null; then
-echo "====================== vcftools pi failed ======================"
-exit
-fi
+Rscript ${sample_code} ${m} ${sup} ${f}
 
 # log results
 echo -e "\nLogging results for founders..."
-Rscript ${founder_gd} ${i} ${m} ${sup} ${f} ${mk} ${k}
+Rscript ${founder_gd} ${i} ${m} ${sup} ${f} ${k}
 
 # run slim - specify migration rate
 echo -e "\nRunning SLiM..."
@@ -93,7 +85,7 @@ fi
 
 # log results
 echo -e "\nLogging results..."
-Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${duration} ${f} ${mk} ${k}
+Rscript ${calcgd_code} ${file} ${i} ${m} ${sup} ${f} ${k}
 
 # remove file
 rm "slim/output_vcf/ch2/${file}.vcf"

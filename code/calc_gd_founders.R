@@ -7,7 +7,6 @@ iter <- args[1]
 mig_rate <- args[2]
 sup <- args[3]
 f <- args[4]
-mk <- args[5]
 k <- args[6]
 
 #### fam ----------------------------------------------------------------------------------------------------------------
@@ -17,22 +16,15 @@ gd <- read.table(paste0("slim/output/offspring/log/best", f, "_gd.txt"), header 
   summarise(ho = mean(ho),
             roh = mean(roh))
 
-#### pi -----------------------------------------------------------------------------------------------------------------
-pi <- read.table("slim/output/ch2/gd/founders.windowed.pi", header = T) %>%
-  janitor::clean_names() %>%
-  summarise(pi = weighted.mean(pi, n_variants))
-
 #### log file ------------------------------------------------------------------------------------------------------------
-log <- bind_cols(pi, gd)%>%
+log <- gd%>%
   mutate(iter = iter,
          m = mig_rate,
          sup = sup,
-         duration = 60,
          tick = 1,
          n = 4,
          f = f,
-         mk = mk,
          k = k)%>%
-  select(iter, f, mk, k, m, duration, sup, tick, n, pi, ho, roh)
+  select(iter, f, k, m, sup, tick, n, ho, roh)
 outfile <- "slim/output/ch2/log/gd.txt"
 write.table(log, outfile, append = T, row.names = F, col.names = !file.exists(outfile), sep = "\t", quote = F)

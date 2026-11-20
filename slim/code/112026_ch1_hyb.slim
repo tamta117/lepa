@@ -1,0 +1,126 @@
+initialize() {
+	setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(nucleotideBased = T);
+	initializeSex();
+	defineConstant("K", 25);
+	defineConstant("tick", seq(11, 61, by = 10));
+	defineConstant("sup_tick", seq(2, 61, by = sup));
+	recom = 1.1e-8;
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(2.86667e-09));
+	m1.convertToSubstitution = T;
+	
+	// chromosome
+	ids = 1:17;
+	symbols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17");
+	lengths = c(241490831, 170782778, 140550405, 207231548, 154917953, 149666277, 142417080, 222385042, 159437941, 154776197, 116981451, 90819563, 96629807, 95534813, 64119235, 62492039, 44368689);
+	types = rep("A", 17);
+	fasta = 1:17;
+	
+	for (id in ids, length in lengths, type in types, symbol in symbols, fasta in fasta) {
+		initializeChromosome(id, length, type, symbol);
+		initializeAncestralNucleotides("slim/files/fasta/" + fasta + ".fasta");
+		initializeGenomicElement(g1);
+		initializeRecombinationRate(recom);
+	}
+}
+
+// add populations
+1 early() {
+	// wild
+	sim.addSubpop("p1", 25, sexRatio = 0.5);
+	p1.individuals.readIndividualsFromVCF("filter/maf/maf0.1_thin_" + pop + ".vcf", m1);
+	
+	//	hybrid
+	n = mig_rate * (60 / sup);
+	sim.addSubpop("p2", asInteger(n), sexRatio = 0.5);
+	p2.individuals.readIndividualsFromVCF("slim/input_vcf/ch1/" + f + ".vcf", m1);
+	
+	// log file
+	defineConstant("log", community.createLogFile("slim/output/ch1/log/hyb.txt", append = T, sep = "\t", header = F));
+	log.addCustomColumn("i", "iter;");
+	log.addCycle();
+	log.addCustomColumn("seed", "getSeed();");
+	log.addSubpopulationSize(p1);
+}
+
+// set age
+1 late() {
+	age1 = p1.sampleIndividuals(3);
+	age1.age = 1;
+	age2 = p1.sampleIndividuals(17, maxAge = 0);
+	do {ages = asInteger(round(rgamma(17, 6.75, 5))) - 1;} while (any(ages < 2));
+	age2.age = ages;
+}
+
+// reproduction with Ne, random prob of sex
+reproduction() {
+	// sample focal females
+	do {nb = rnorm(1, mean = 0.52, sd = 0.045);} while (nb < 0);
+	females = p1.subsetIndividuals(sex = "F", minAge = 2, maxAge = 12);
+	if (females.size() == 0) { break; } // do not reproduce if no females available
+	do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
+	reproduce = p1.sampleIndividuals(breeders, sex = "F", minAge = 2, maxAge = 12);
+	
+	// reproduce
+	for (i in reproduce) {
+		male = p1.sampleIndividuals(1, sex = "M", minAge = 3, maxAge = 12);
+		// do not reproduce if no male available
+		if (male.size() == 0) { next; }
+		do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
+		while (littersize <= 0);
+		p1.addCrossed(i, male, count = littersize);
+	}
+	self.active = 0;
+}
+
+2: early() {
+	// age-structured survival
+	do { surf = runif(1, 0.2, 0.68); } while (surf > 1);
+	do { sura = rbeta(1, alpha = 25, beta = 2); } while (sura > 1);
+	do { surt = rnorm(1, 0.615, 0.1); } while (surt > 1);
+	inds = p1.individuals;
+	ages = inds.age;
+	inds1 = inds[ages == 0];
+	inds2 = inds[ages >= 2 & ages < 15];
+	inds10 = inds[ages >= 15];
+	mig = inds[ages == 1];
+	death1 = rbinom(1, inds1.size(), 1 - surf);
+	death2 = rbinom(1, inds2.size(), 1 - sura);
+	deathm = rbinom(1, mig.size(), 1 - surt);
+	death_first = sample(inds1, death1);
+	death_adult = sample(inds2, death2);
+	death_mig = sample(mig, deathm);
+	sim.killIndividuals(c(death_first, death_adult, inds10, death_mig));
+	
+	// density-dependence
+	p1.fitnessScaling = K / p1.individualCount;
+}
+
+sup_tick early() {
+	p1.takeMigrants(p2.sampleIndividuals(mig_rate));
+	sims = sim.subpopulations.individuals;
+	sims[sims.migrant == T].age = 1;
+}
+
+// summary stats
+1: late() {
+	if (p1.individualCount == 0) {
+		log.logRow();
+		sim.simulationFinished();
+	}
+}
+
+// output final
+tick late() {
+	if (p1.individualCount > 0) {
+		outfile = "slim/output_vcf/ch1/hyb" + sim.cycle + ".vcf";
+		p1.individuals.outputIndividualsToVCF(outfile, outputMultiallelics = F, simplifyNucleotides = T);
+	}
+	log.logRow();
+}
+
+61 late() {
+	sim.simulationFinished();
+}
