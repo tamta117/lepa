@@ -59,7 +59,7 @@ reproduction() {
 	// sample focal females
 	do {nb = rnorm(1, mean = 0.52, sd = 0.045);} while (nb < 0);
 	females = p1.subsetIndividuals(sex = "F", minAge = 2, maxAge = 12);
-	if (females.size() == 0) { break; } // do not reproduce if no females available
+	if (females.size() == 0) { return; } // do not reproduce if no females available
 	do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
 	reproduce = p1.sampleIndividuals(breeders, sex = "F", minAge = 2, maxAge = 12);
 	
