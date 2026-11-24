@@ -59,18 +59,19 @@ reproduction() {
 	// sample focal females
 	do {nb = rnorm(1, mean = 0.52, sd = 0.045);} while (nb < 0);
 	females = p1.subsetIndividuals(sex = "F", minAge = 2, maxAge = 12);
-	if (females.size() == 0) { return; } // do not reproduce if no females available
-	do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
-	reproduce = p1.sampleIndividuals(breeders, sex = "F", minAge = 2, maxAge = 12);
-	
-	// reproduce
-	for (i in reproduce) {
-		male = p1.sampleIndividuals(1, sex = "M", minAge = 3, maxAge = 12);
-		// do not reproduce if no male available
-		if (male.size() == 0) { next; }
-		do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
-		while (littersize <= 0);
-		p1.addCrossed(i, male, count = littersize);
+	if (females.size() > 0) {
+		do { breeders = rbinom(1, size(females), nb); } while (breeders == 0);
+		reproduce = p1.sampleIndividuals(breeders, sex = "F", minAge = 2, maxAge = 12);
+		
+		// reproduce
+		for (i in reproduce) {
+			male = p1.sampleIndividuals(1, sex = "M", minAge = 3, maxAge = 12);
+			// do not reproduce if no male available
+			if (male.size() == 0) { next; }
+			do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
+			while (littersize <= 0);
+			p1.addCrossed(i, male, count = littersize);
+		}
 	}
 	self.active = 0;
 }
