@@ -67,7 +67,7 @@ reproduction() {
 		for (i in reproduce) {
 			male = p1.sampleIndividuals(1, sex = "M", minAge = 3, maxAge = 12);
 			// do not reproduce if no male available
-			if (male.size() == 0) { next; }
+			if (male.size() == 0) { break; }
 			do { littersize = asInteger(round(rnorm(1, 1.2, 0.44))); }
 			while (littersize <= 0);
 			p1.addCrossed(i, male, count = littersize);

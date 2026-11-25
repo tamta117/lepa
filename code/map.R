@@ -63,14 +63,22 @@ tx_box <- st_buffer(tx, dist = 5000)
 
 # plot extent map
 (extent <- ggplot() +
-    # basemap_gglayer(ext = tx_box, map_service = "maptiler", map_type = "dataviz", map_token = "65nCBw10xNgAshsPLqSF")+
-    # scale_fill_identity() +
-    # new_scale_fill() +
-    geom_sf(data = tx, fill = NA)+
-    geom_sf(data = extent_box, fill = "#005b4d", color = "#005b4d", alpha = 0.8)+
+    basemap_gglayer(ext = tx_box, map_service = "maptiler", map_type = "dataviz", map_token = "65nCBw10xNgAshsPLqSF")+
+    scale_fill_identity() +
+    new_scale_fill() +
+    geom_sf(data = tx, fill = NA, color = "#767830")+
+    geom_sf(data = extent_box, fill = "#a75a97", color = "#a75a97", alpha = 0.8)+
     my_theme)
 ggsave("figures/tx_extent.png", dpi = 300)
 
 # add extent to main map
 (final_map <- main + 
     inset_element(extent, left = 0.02, bottom = 0.02, right = 0.5, top = 0.5))
+
+#### directions in photoshop
+# remove background of no-basemap tx
+# clip basemap tx to no-basemap tx (right click layer > clipping mask)
+# add outline: stay on no-basemap layer > layer > layer style > stroke
+
+#### direction in Powerpoint
+# shadow with center offset 

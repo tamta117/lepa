@@ -7,14 +7,14 @@ set -e
 niter=500
 m=2
 sup=1
-f=50
+f=75
 pop="ranch"
 sample_code="code/sample_ch1_hyb.R"
 slim_code="slim/code/112026_ch1_hyb.slim"
 format_code="code/process_slim_vcf_hyb.R"
 calcgd_code="code/calc_gd_ch1_hyb.R"
 
-for i in $(seq 91 $niter); do
+for i in $(seq 1 $niter); do
 echo "====================================================="
 echo "Starting iteration $i for ch1 ${f}% m = ${m}"
 echo "====================================================="
