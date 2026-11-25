@@ -104,13 +104,13 @@ library(showtext)
 # font_add_google("Montserrat") -- does not work on mac
 font_add(family = "montserrat",
          regular = "fonts/Montserrat/static/Montserrat-Regular.ttf",
-         bold = "fonts/Montserrat/static/Montserrat-Light.ttf")
+         bold = "fonts/Montserrat/static/Montserrat-Medium.ttf")
 showtext_auto()
 
 # set theme
-theme_set(theme_minimal(base_family = "montserrat"))
-theme_update(text = element_text(color = "#596337", size = 35),
-             axis.title = element_text(size = 40),
+theme_set(theme_minimal(base_family = "montserrat", face = "regular"))
+theme_update(text = element_text(color = "#596337", size = 60),
+             axis.text = element_text(color = "#596337", size = 50),
              axis.ticks = element_blank(),
              legend.key = element_rect(fill = NA, color = NA),
              legend.position = "top",
@@ -120,34 +120,133 @@ theme_update(text = element_text(color = "#596337", size = 35),
              panel.grid = element_blank(),
              panel.border = element_rect(colour = "#D6D3CE", fill = NA),
              plot.margin = margin(20, 40, 20, 40))
+col1 <- "#a19681"
+col2 <- "#4d4637"
+col3 <- "#9b9b57"
+col4 <- "#767830"
+col5 <- "#88b0a9"
+col6 <- "#557c75"
 
-# ho for m
-(ho <- ggplot(subset(pivot, metrics == "ho" & migrant %in% c("none", "100%") & pop == "ranch"), aes(tick, values, color = factor(m), fill = factor(m)))+
-    geom_vline(xintercept = seq(0, 50, by = 10), color = "#aba9a5", size = 0.2)+
-    geom_segment(data = tibble(y = 0.15, x1 = 0, x2 = 60), aes(x = x1, xend = x2, y = y, yend = y), inherit.aes = F, color = "#aba9a5", size = 0.2)+
-    geom_segment(data = tibble(y = 0.20, x1 = 0, x2 = 60), aes(x = x1, xend = x2, y = y, yend = y), inherit.aes = F, color = "#aba9a5", size = 0.2)+
-    geom_segment(data = tibble(y = 0.25, x1 = 0, x2 = 60), aes(x = x1, xend = x2, y = y, yend = y), inherit.aes = F, color = "#aba9a5", size = 0.2)+
-    geom_segment(data = tibble(y = 0.30, x1 = 0, x2 = 60), aes(x = x1, xend = x2, y = y, yend = y), inherit.aes = F, color = "#aba9a5", size = 0.2)+
-    geom_segment(data = tibble(y = 0.35, x1 = 0, x2 = 60), aes(x = x1, xend = x2, y = y, yend = y), inherit.aes = F, color = "#aba9a5", size = 0.2)+
-    geom_smooth(aes(color = factor(m), fill = factor(m)), method = "loess", span = 1.3, linetype = 1)+
-    scale_y_continuous(breaks = seq(0.15, 0.35, by = 0.05), expand = c(0, 0))+
-    scale_x_continuous(breaks = seq(0, 60, by = 10), expand = c(0, 0), limits = c(0, 63.5))+
-    coord_cartesian(
-      clip = "off",
-      ylim = c(0.1, 0.35)
-    )+
-    guides(linetype = guide_legend(override.aes = list(color = "black", fill = NA)),
-           color = guide_legend(override.aes = list(fill = NA)))+
+# create new levels to label with geom_text_repel
+lvls <- c("No augmentation", "Natural dispersal", "wild 1 individual/year", "wild 2 individuals/year", "outbred 1 individual/year", "outbred 2 individuals/year")
+cols <- setNames(c(col1, col2, col3, col4, col5, col6), lvls)
+plot <- pivot %>%
+  mutate(migrant_plot = factor(case_when(m == 0   ~ lvls[1],
+                                         m == 0.5 ~ lvls[2],
+                                         m == 1 & migrant == "100%" ~ lvls[3],
+                                         m == 2 & migrant == "100%" ~ lvls[4],
+                                         m == 1 & migrant %in% c("50%", "75%") ~ lvls[5],
+                                         m == 2 & migrant %in% c("50%", "75%") ~ lvls[6]),
+                               levels = lvls))
+
+# create new labels for geom_text_repel
+# need this to have different colors for the same label
+labels <- c("No augmentation" = "No augmentation", 
+            "Natural dispersal" = "Natural dispersal",
+            "wild 1 individual/year" = "1 individual/year",
+            "wild 2 individuals/year" = "2 individuals/year",
+            "outbred 1 individual/year" = "1 individual/year",
+            "outbred 2 individuals/year" = "2 individuals/year")
+
+# export legend
+ggplot(subset(plot, metrics == "ho" & migrant %in% c("none", "100%") & pop == "ranch"), aes(tick, values, color = migrant_plot, fill = migrant_plot))+
+  geom_smooth(method = "loess", formula = y ~ x, span = 1.3) +
+  scale_color_manual(values = cols) +
+  scale_fill_manual(values = cols) +
+  guides(color = guide_legend(override.aes = list(fill = NA))) +
+  labs(color = "Number of translocated individuals per year per pop",
+       fill = "Number of translocated individuals per year per pop")
+ggsave("figures/ch1_wild_legend.png", dpi = 300, width = 20, height = 6.72, units = "in")
+
+# wild only: ho for m
+(ho <- ggplot(subset(plot, metrics == "ho" & migrant %in% c("none", "100%") & pop == "ranch"), aes(tick, values, color = migrant_plot, fill = migrant_plot))+
+    geom_vline(xintercept = seq(0, 50, by = 10), color = "#aba9a5", linewidth = 0.2) +
+    annotate("segment", x = 0, xend = 60, y = seq(0.15, 0.35, by = 0.05), yend = seq(0.15, 0.35, by = 0.05), color = "#aba9a5", linewidth = 0.2) +
+    geom_smooth(method = "loess", formula = y ~ x, span = 1.3) +
+    geom_text_repel(aes(label = after_stat(ifelse(x == max(x), as.character(colour), NA_character_))),
+                    stat = "smooth", method = "loess", formula = y ~ x, span = 1.3, na.rm = TRUE,
+                    family = "montserrat", size = 20, direction = "y", xlim = c(63, NA), hjust = 0, vjust = 0.5,
+                    segment.size = 0.8, segment.alpha = 1, segment.linetype = "dotted", segment.curvature = -0.1, min.segment.length = 2,
+                    box.padding = 0.4, show.legend = FALSE) +
+    scale_y_continuous(breaks = seq(0.15, 0.35, by = 0.05), expand = c(0, 0)) +
+    scale_x_continuous(breaks = seq(0, 60, by = 10), expand = c(0, 0), limits = c(0, 85)) +
+    scale_color_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    coord_cartesian(clip = "off", ylim = c(0.1, 0.35)) +
+    guides(color = guide_legend(override.aes = list(fill = NA))) +
     labs(x = "Year",
          y = expression(Observed ~ heterozygosity ~ (H[o])),
          color = "Number of translocated individuals per year per pop",
          fill = "Number of translocated individuals per year per pop")+
-    geom_text_repel(aes(label = after_stat(ifelse(x %in% max(x), as.character(color), NA_character_))),
-                    stat = "smooth", method = "loess", span = 1.3,
-                    family = "montserrat", size = 10, direction = "y", xlim = c(65, NA), hjust = 0.5, vjust = 0, # adjust text
-                    segment.size = 0.8, segment.alpha = 1, segment.linetype = "dotted", segment.angle = 0, # adjust segments
-                    box.padding = 0.2, show.legend = F))
-ggsave("figures/ch1_m.png", dpi = 300, width = 12.59, height = 7, units = "in")
+    theme(legend.position = "none"))
+ggsave("figures/ch1_wild_ho.png", dpi = 300, width = 12, height = 6.72, units = "in")
+
+# wild only: roh for m
+(ho <- ggplot(subset(plot, metrics == "roh" & migrant %in% c("none", "100%") & pop == "ranch"), aes(tick, values, color = migrant_plot, fill = migrant_plot))+
+    geom_vline(xintercept = seq(0, 50, by = 10), color = "#aba9a5", linewidth = 0.2) +
+    annotate("segment", x = 0, xend = 60, y = seq(0.1, 0.5, by = 0.1), yend = seq(0.1, 0.5, by = 0.1), color = "#aba9a5", linewidth = 0.2) +
+    geom_smooth(method = "loess", formula = y ~ x, span = 1.3) +
+    geom_text_repel(aes(label = after_stat(ifelse(x == max(x), as.character(colour), NA_character_))),
+                    stat = "smooth", method = "loess", formula = y ~ x, span = 1.3, na.rm = TRUE,
+                    family = "montserrat", size = 20, direction = "y", xlim = c(63, NA), hjust = 0, vjust = 0.5,
+                    segment.size = 0.8, segment.alpha = 1, segment.linetype = "dotted", segment.curvature = -0.1, min.segment.length = 2,
+                    box.padding = 0.4, show.legend = FALSE) +
+    scale_y_continuous(breaks = seq(0.1, 0.5, by = 0.1), expand = c(0, 0)) +
+    scale_x_continuous(breaks = seq(0, 60, by = 10), expand = c(0, 0), limits = c(0, 85)) +
+    scale_color_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    coord_cartesian(clip = "off", ylim = c(0.05, 0.55)) +
+    guides(color = guide_legend(override.aes = list(fill = NA))) +
+    labs(x = "Year",
+         y = expression(Proportion ~ of ~ ROH ~ (F[roh])),
+         color = "Number of translocated individuals per year per pop",
+         fill = "Number of translocated individuals per year per pop"))+
+  theme(legend.position = "none")
+ggsave("figures/ch1_wild_roh.png", dpi = 300, width = 12, height = 6.72, units = "in")
+
+# wild + hyb ho
+ggplot(subset(plot, metrics == "ho" & pop == "ranch"), aes(tick, values, color = migrant_plot, fill = migrant_plot))+
+  geom_vline(xintercept = seq(0, 50, by = 10), color = "#aba9a5", linewidth = 0.2) +
+  annotate("segment", x = 0, xend = 60, y = seq(0.15, 0.35, by = 0.05), yend = seq(0.15, 0.35, by = 0.05), color = "#aba9a5", linewidth = 0.2) +
+  geom_smooth(method = "loess", formula = y ~ x, span = 1.3) +
+  geom_text_repel(aes(label = after_stat(ifelse(x == max(x), labels[as.character(colour)], NA_character_))),
+                  stat = "smooth", method = "loess", formula = y ~ x, span = 1.3, na.rm = TRUE,
+                  family = "montserrat", size = 20, direction = "y", xlim = c(63, NA), hjust = 0, vjust = 0.5,
+                  segment.size = 0.8, segment.alpha = 1, segment.linetype = "dotted", segment.curvature = -0.1, min.segment.length = 2,
+                  box.padding = 0.4, show.legend = FALSE) +
+  scale_y_continuous(breaks = seq(0.15, 0.35, by = 0.05), expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0, 60, by = 10), expand = c(0, 0), limits = c(0, 85)) +
+  scale_color_manual(values = cols) +
+  scale_fill_manual(values = cols) +
+  coord_cartesian(clip = "off", ylim = c(0.1, 0.35)) +
+  guides(color = guide_legend(override.aes = list(fill = NA))) +
+  labs(x = "Year",
+       y = expression(Observed ~ heterozygosity ~ (H[o])))+
+  theme(legend.position = "none")
+ggsave("figures/ch1_hyb_ho.png", dpi = 300, width = 12, height = 6.72, units = "in")
+
+# wild + hyb roh
+ggplot(subset(plot, metrics == "roh" & pop == "ranch"), aes(tick, values, color = migrant_plot, fill = migrant_plot))+
+  geom_vline(xintercept = seq(0, 50, by = 10), color = "#aba9a5", linewidth = 0.2) +
+  annotate("segment", x = 0, xend = 60, y = seq(0.1, 0.5, by = 0.1), yend = seq(0.1, 0.5, by = 0.1), color = "#aba9a5", linewidth = 0.2) +
+  geom_smooth(method = "loess", formula = y ~ x, span = 1.3) +
+  geom_text_repel(aes(label = after_stat(ifelse(x == max(x), new_labs[as.character(colour)], NA_character_))),
+                  stat = "smooth", method = "loess", formula = y ~ x, span = 1.3, na.rm = TRUE,
+                  family = "montserrat", size = 20, direction = "y", xlim = c(63, NA), hjust = 0, vjust = 0.5,
+                  segment.size = 0.8, segment.alpha = 1, segment.linetype = "dotted", segment.curvature = -0.1, min.segment.length = 2,
+                  box.padding = 0.4, show.legend = FALSE) +
+  scale_y_continuous(breaks = seq(0.1, 0.5, by = 0.1), expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0, 60, by = 10), expand = c(0, 0), limits = c(0, 85)) +
+  scale_color_manual(values = cols) +
+  scale_fill_manual(values = cols) +
+  coord_cartesian(clip = "off", ylim = c(0.05, 0.55)) +
+  guides(color = guide_legend(override.aes = list(fill = NA))) +
+  labs(x = "Year",
+       y = expression(Proportion ~ of ~ ROH ~ (F[roh])),
+       color = "Number of translocated individuals per year per pop",
+       fill = "Number of translocated individuals per year per pop")+
+  theme(legend.position = "none")
+ggsave("figures/ch1_hyb_roh.png", dpi = 300, width = 12, height = 6.72, units = "in")
 
 # no dispersers -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
